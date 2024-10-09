@@ -1,0 +1,6 @@
+[submodule "third-party/enet"]
+	path = third-party/enet
+	url = git@github.com:lsalzman/enet.git
+[submodule "server/third-party/enet"]
+	path = server/third-party/enet
+	url = git@github.com:lsalzman/enet.git

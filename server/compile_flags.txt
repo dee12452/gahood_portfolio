@@ -1,0 +1,6 @@
+-I
+./include
+-I
+./third-party/box2d/include
+-I
+./third-party/enet/include

@@ -1,0 +1,5 @@
+package com.example.gahood_portfolio
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity()
