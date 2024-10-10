@@ -35,10 +35,13 @@ class SetupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(create: (_) => _AliasCubit()),
-      BlocProvider(create: (context) => _CharacterSelectCubit()),
-    ], child: _SetupPage());
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => _AliasCubit()),
+        BlocProvider(create: (context) => _CharacterSelectCubit()),
+      ],
+      child: _SetupPage(),
+    );
   }
 }
 
@@ -153,10 +156,13 @@ class _SetupPage extends StatelessWidget {
                 onPressed: state == ''
                     ? () {}
                     : () {
-                        context.go('/game', extra: {
-                          'alias': state,
-                          'character': characterSelectCubit.state,
-                        });
+                        context.go(
+                          '/connecting',
+                          extra: {
+                            'alias': state,
+                            'character': characterSelectCubit.state,
+                          },
+                        );
                       },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
