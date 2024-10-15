@@ -11,22 +11,27 @@ class _AliasCubit extends Cubit<String> {
 }
 
 class _CharacterSelectCubit extends Cubit<int> {
-  static const int _max = 20;
+  static const int _min = 1;
+  static const int _max = 1;
 
-  _CharacterSelectCubit() : super(0);
+  _CharacterSelectCubit() : super(_min);
 
   void toggleLeft() {
-    if (state == 0) {
-      emit(_max - 1);
+    final next = state - 1;
+    if (next < _min) {
+      emit(_max);
+    } else {
+      emit(next);
     }
-    emit(state - 1);
   }
 
   void toggleRight() {
-    if (state == _max - 1) {
-      emit(0);
+    final next = state + 1;
+    if (next > _max) {
+      emit(_min);
+    } else {
+      emit(next);
     }
-    emit(state + 1);
   }
 }
 
@@ -115,11 +120,9 @@ class _SetupPage extends StatelessWidget {
                 BlocBuilder<_CharacterSelectCubit, int>(
                   builder: (context, state) => SizedBox(
                     height: height * 0.075,
-                    width: height * 0.075,
                     child: SpriteWidget.asset(
-                      path: 'characters.png',
-                      srcPosition: Vector2(0, state * 16),
-                      srcSize: Vector2(16, 16),
+                      path: 'character_${state}_idle.png',
+                      srcSize: Vector2(32, 48),
                       loadingBuilder: (context) =>
                           const CircularProgressIndicator(),
                     ),

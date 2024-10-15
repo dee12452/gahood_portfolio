@@ -9,8 +9,7 @@ import 'package:gahood_portfolio/game/components/player.dart';
 import 'package:gahood_portfolio/game/components/world.dart';
 import 'package:gahood_portfolio/game/connection.dart';
 
-class GahoodGame extends FlameGame
-    with KeyboardEvents, TapCallbacks, HasCollisionDetection {
+class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
   static final Set<LogicalKeyboardKey> _arrowKeys = {
     LogicalKeyboardKey.keyW,
     LogicalKeyboardKey.keyA,
@@ -22,6 +21,8 @@ class GahoodGame extends FlameGame
   final String alias;
   final Connection connection;
 
+  Function? onActionPressed;
+
   final List<LogicalKeyboardKey> _directionKeysDown = [];
   Player? _player;
 
@@ -32,8 +33,8 @@ class GahoodGame extends FlameGame
   }) : super(
           world: GahoodWorld(),
           camera: CameraComponent.withFixedResolution(
-            width: 800 * 0.3,
-            height: 600 * 0.3,
+            width: 800 * 0.5,
+            height: 600 * 0.5,
           ),
         );
 
@@ -81,6 +82,9 @@ class GahoodGame extends FlameGame
       _directionKeysDown.remove(key);
       _directionKeysDown.add(key);
       return KeyEventResult.handled;
+    }
+    if (key == LogicalKeyboardKey.space) {
+      onActionPressed?.call();
     }
 
     return KeyEventResult.ignored;
