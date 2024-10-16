@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:gahood_portfolio/game/components/degree.dart';
+import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/wall.dart';
-import 'package:gahood_portfolio/game/direction.dart';
 
 class GahoodWorld extends World with HasCollisionDetection {
+  late final TiledComponent map;
+
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-    final map = await TiledComponent.load(
+    map = await TiledComponent.load(
       'map_1.tmx',
       Vector2.all(32),
       prefix: 'assets/maps/',

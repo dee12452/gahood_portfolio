@@ -1,4 +1,4 @@
-import 'package:gahood_portfolio/game/direction.dart';
+import 'package:gahood_portfolio/game/components/direction.dart';
 
 mixin Interactable {
   bool canInteract(Direction facingDirection);

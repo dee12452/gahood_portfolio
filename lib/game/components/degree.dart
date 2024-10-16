@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
+import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
 import 'package:gahood_portfolio/game/components/text_box.dart';
-import 'package:gahood_portfolio/game/direction.dart';
 
 class Degree extends PositionComponent with Interactable {
   final Direction interactionDirection;
