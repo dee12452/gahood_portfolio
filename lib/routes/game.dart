@@ -17,8 +17,10 @@ class GamePage extends StatelessWidget {
     }
     final alias = metadata['alias'] as String?;
     final character = metadata['character'] as int?;
+    // TODO: Do we need a server?
     final client = metadata['client'] as Connection?;
-    if (alias == null || character == null || client == null) {
+    client?.disconnect();
+    if (alias == null || character == null) {
       context.go('/');
       return Container();
     }
@@ -27,7 +29,6 @@ class GamePage extends StatelessWidget {
       game: GahoodGame(
         alias: alias,
         character: character,
-        connection: client,
       ),
     );
   }

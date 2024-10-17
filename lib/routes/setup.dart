@@ -160,7 +160,7 @@ class _SetupPage extends StatelessWidget {
                     ? () {}
                     : () {
                         context.go(
-                          '/connecting',
+                          '/game',
                           extra: {
                             'alias': state,
                             'character': characterSelectCubit.state,

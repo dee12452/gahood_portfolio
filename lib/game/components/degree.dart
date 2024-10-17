@@ -3,17 +3,15 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/components/text_box.dart';
+import 'package:gahood_portfolio/game/game.dart';
 
-class Degree extends PositionComponent with Interactable {
-  final Direction interactionDirection;
+class Degree extends PositionComponent
+    with Interactable, HasGameReference<GahoodGame> {
   final Vector2 interactionOffset;
 
   Degree({
     required Vector2 rawPos,
-    required this.interactionDirection,
     required this.interactionOffset,
   }) : super(position: _fromRawPos(rawPos));
 
@@ -35,18 +33,12 @@ class Degree extends PositionComponent with Interactable {
   }
 
   @override
-  bool canInteract(Direction facingDirection) {
-    return interactionDirection == facingDirection;
-  }
-
-  @override
-  void interact() {
-    final textComponent = GahoodTextBox(
-      texts: [
-        'It\'s my Bachelor\'s Degree in Computer Science from the University of Washington!',
-      ],
+  Interaction getInteraction() {
+    return TextInteraction(
+      game: game,
+      parent: this,
+      textInteractionId: 'degree',
     );
-    add(textComponent);
   }
 
   static Vector2 _fromRawPos(Vector2 rawPos) {

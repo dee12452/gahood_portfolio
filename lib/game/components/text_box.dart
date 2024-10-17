@@ -1,8 +1,14 @@
 import 'package:flame/components.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:gahood_portfolio/game/game.dart';
+import 'package:gahood_portfolio/game/input.dart';
+import 'package:gahood_portfolio/game/state.dart';
 
 class _ActualTextBox extends TextBoxComponent {
+  static const double _width = 210;
+  static const double _height = 60;
+
   final bgPaint = Paint()..color = Colors.black;
   final borderPaint = Paint()
     ..color = Colors.white
@@ -12,7 +18,7 @@ class _ActualTextBox extends TextBoxComponent {
   _ActualTextBox(String text, this.parentSize)
       : super(
           text: text,
-          boxConfig: const TextBoxConfig(timePerChar: 0.03),
+          boxConfig: const TextBoxConfig(timePerChar: 0.025),
           textRenderer: TextPaint(
             style: const TextStyle(
               fontSize: 12,
@@ -26,14 +32,14 @@ class _ActualTextBox extends TextBoxComponent {
     await super.onLoad();
 
     position = Vector2(
-      (parentSize.x - size.x) / 2,
-      parentSize.y - size.y - (parentSize.y * .05),
+      (parentSize.x - _width) / 2,
+      parentSize.y - _height - (parentSize.y * .05),
     );
   }
 
   @override
   void render(Canvas canvas) {
-    Rect rect = const Rect.fromLTWH(0, 0, 210, 60);
+    Rect rect = const Rect.fromLTWH(0, 0, _width, _height);
     canvas.drawRect(rect, bgPaint);
     canvas.drawRect(rect.deflate(1), borderPaint);
     super.render(canvas);
@@ -41,9 +47,12 @@ class _ActualTextBox extends TextBoxComponent {
 }
 
 class GahoodTextBox extends PositionComponent
-    with HasGameReference<GahoodGame> {
+    with
+        HasGameReference<GahoodGame>,
+        FlameBlocListenable<PlayerInputCubit, PlayerInput> {
   final List<String> texts;
   late _ActualTextBox _currentTextBox;
+  late Vector2 viewportSize;
   int index = 0;
 
   GahoodTextBox({required this.texts});
@@ -52,35 +61,37 @@ class GahoodTextBox extends PositionComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
+    viewportSize = game.camera.viewport.virtualSize;
     game.state = GameState.freeze;
 
-    final camera = game.camera;
-    _addNextTextBox(camera, index);
+    _addNextTextBox(index);
+  }
 
-    game.onActionPressed = () {
-      if (_currentTextBox.finished) {
-        _currentTextBox.removeFromParent();
-        _addNextTextBox(camera, ++index);
-      }
-    };
+  @override
+  void onNewState(PlayerInput state) {
+    if (state is! PlayerActionInput) {
+      return;
+    }
+
+    if (_currentTextBox.finished) {
+      _currentTextBox.removeFromParent();
+      _addNextTextBox(++index);
+    }
   }
 
   @override
   void onRemove() {
     super.onRemove();
-    game.onActionPressed = null;
     game.state = GameState.play;
   }
 
-  void _addNextTextBox(CameraComponent camera, int nextIndex) {
+  void _addNextTextBox(int nextIndex) {
     if (nextIndex >= texts.length) {
       removeFromParent();
       return;
     }
 
-    _currentTextBox =
-        _ActualTextBox(texts[nextIndex], camera.viewport.virtualSize);
-    camera.viewport.add(_currentTextBox);
-    _currentTextBox.onComplete = () {};
+    _currentTextBox = _ActualTextBox(texts[nextIndex], viewportSize);
+    game.camera.viewport.add(_currentTextBox);
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -8,38 +9,23 @@ import 'package:flutter/services.dart';
 import 'package:gahood_portfolio/game/components/player.dart';
 import 'package:gahood_portfolio/game/components/world.dart';
 import 'package:gahood_portfolio/game/connection.dart';
-
-enum GameState {
-  play,
-  freeze,
-  stop,
-}
+import 'package:gahood_portfolio/game/input.dart';
+import 'package:gahood_portfolio/game/state.dart';
 
 class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
-  static final Set<LogicalKeyboardKey> _arrowKeys = {
-    LogicalKeyboardKey.keyW,
-    LogicalKeyboardKey.keyA,
-    LogicalKeyboardKey.keyS,
-    LogicalKeyboardKey.keyD,
-  };
-
-  final int character;
   final String alias;
-  final Connection connection;
+  final int character;
+  final KeyUpCubit keyUpCubit = KeyUpCubit();
+  final KeyDownCubit keyDownCubit = KeyDownCubit();
 
-  Function? onActionPressed;
-
-  final List<LogicalKeyboardKey> _directionKeysDown = [];
-  Player? _player;
+  late final Map<String, dynamic> interactionFile;
   GameState state;
 
   GahoodGame({
     required this.alias,
     required this.character,
-    required this.connection,
     this.state = GameState.play,
   }) : super(
-          world: GahoodWorld(),
           camera: CameraComponent.withFixedResolution(
             width: 800 * 0.5,
             height: 600 * 0.5,
@@ -50,21 +36,16 @@ class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
   FutureOr<void> onLoad() async {
     await super.onLoad();
 
-    _player = Player(character: character);
-    world.add(_player!);
-    camera.follow(_player!);
-  }
+    final interactionFileStr =
+        await rootBundle.loadString('assets/texts/interactions.json');
+    interactionFile = json.decode(interactionFileStr);
 
-  @override
-  void update(double dt) {
-    connection.update();
-    super.update(dt);
-  }
-
-  @override
-  void onRemove() {
-    connection.disconnect();
-    super.onRemove();
+    world = GahoodWorld(
+      camera: camera,
+      player: Player(character: character),
+      keyUpCubit: keyUpCubit,
+      keyDownCubit: keyDownCubit,
+    );
   }
 
   @override
@@ -73,39 +54,13 @@ class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     if (event is KeyDownEvent) {
-      return _onKeyDown(event);
+      keyDownCubit.update(event.logicalKey);
+      return KeyEventResult.handled;
     } else if (event is KeyUpEvent) {
-      return _onKeyUp(event);
+      keyUpCubit.update(event.logicalKey);
+      return KeyEventResult.handled;
     }
 
     return super.onKeyEvent(event, keysPressed);
-  }
-
-  LogicalKeyboardKey? get nextDirectionKey =>
-      _directionKeysDown.isEmpty ? null : _directionKeysDown.last;
-
-  KeyEventResult _onKeyDown(KeyDownEvent event) {
-    final key = event.logicalKey;
-    if (_arrowKeys.contains(key)) {
-      _directionKeysDown.remove(key);
-      _directionKeysDown.add(key);
-      return KeyEventResult.handled;
-    }
-    if (key == LogicalKeyboardKey.space) {
-      onActionPressed?.call();
-    }
-
-    return KeyEventResult.ignored;
-  }
-
-  KeyEventResult _onKeyUp(KeyUpEvent event) {
-    final key = event.logicalKey;
-    if (_arrowKeys.contains(key)) {
-      if (_directionKeysDown.remove(key)) {
-        return KeyEventResult.handled;
-      }
-    }
-
-    return KeyEventResult.ignored;
   }
 }

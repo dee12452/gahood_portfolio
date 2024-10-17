@@ -4,12 +4,15 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
 import 'package:gahood_portfolio/game/components/movement.dart';
 import 'package:gahood_portfolio/game/components/wall.dart';
 import 'package:gahood_portfolio/game/components/world.dart';
 import 'package:gahood_portfolio/game/game.dart';
+import 'package:gahood_portfolio/game/input.dart';
+import 'package:gahood_portfolio/game/state.dart';
 
 class AnimationContext {
   Direction currentDirection = Direction.down;
@@ -19,10 +22,12 @@ class Player extends SpriteAnimationComponent
     with HasGameReference<GahoodGame>, CollisionCallbacks, MovementController {
   final int character;
   final double speed;
+  final List<Interactable> _interactables = [];
   late SpriteSheet _idleSpriteSheet;
   late SpriteSheet _walkSpriteSheet;
   late Sprite _questionMarkSprite;
   SpriteComponent? _questionMark;
+  Direction? _nextMoveDirection;
 
   Player({required this.character, this.speed = 100})
       : super(
@@ -57,6 +62,20 @@ class Player extends SpriteAnimationComponent
       position: Vector2(size.x * 0.1, size.y * 0.5),
     );
     add(hitbox);
+
+    final playerInputListener =
+        FlameBlocListener<PlayerInputCubit, PlayerInput>(
+      onNewState: (state) {
+        if (state is PlayerMovementInput) {
+          _nextMoveDirection = state.direction;
+        } else if (state is PlayerActionInput) {
+          _onAction();
+        } else {
+          _nextMoveDirection = null;
+        }
+      },
+    );
+    await add(playerInputListener);
   }
 
   @override
@@ -78,23 +97,9 @@ class Player extends SpriteAnimationComponent
       return;
     }
 
-    final direction = Direction.fromKey(game.nextDirectionKey);
-    move(dt, speed, direction);
-    final map = (game.world as GahoodWorld).map;
-    if (position.x - size.x / 2 < 0 ||
-        position.y - size.y / 2 < 0 ||
-        position.x + size.x / 2 > map.size.x ||
-        position.y + size.y / 2 > map.size.y) {
-      undoMove();
-    }
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-    if (other is Wall) {
-      undoMove();
-    }
+    move(dt, speed, _nextMoveDirection);
+    _checkOutsideMap();
+    _checkInteractionSprite();
   }
 
   @override
@@ -103,13 +108,11 @@ class Player extends SpriteAnimationComponent
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
-    if (other is Interactable) {
-      final interactable = other as Interactable;
-      game.onActionPressed = () {
-        if (interactable.canInteract(direction)) {
-          interactable.interact();
-        }
-      };
+    if (other is Wall) {
+      _nextMoveDirection = null;
+      undoMove();
+    } else if (other is Interactable) {
+      _interactables.add(other as Interactable);
     }
   }
 
@@ -117,7 +120,7 @@ class Player extends SpriteAnimationComponent
   void onCollisionEnd(PositionComponent other) {
     super.onCollisionEnd(other);
     if (other is Interactable) {
-      game.onActionPressed = null;
+      _interactables.remove(other as Interactable);
     }
   }
 
@@ -137,6 +140,44 @@ class Player extends SpriteAnimationComponent
       stepTime: 0.2,
       to: 4,
     );
+  }
+
+  void _onAction() {
+    if (game.state != GameState.play || _interactables.isEmpty) {
+      return;
+    }
+
+    final interaction = _interactables.last.getInteraction();
+    if (interaction.canInteract(direction)) {
+      interaction.interact();
+    }
+  }
+
+  void _checkOutsideMap() {
+    final map = (game.world as GahoodWorld).map;
+    if (position.x - size.x / 2 < 0 ||
+        position.y - size.y / 2 < 0 ||
+        position.x + size.x / 2 > map.size.x ||
+        position.y + size.y / 2 > map.size.y) {
+      undoMove();
+    }
+  }
+
+  void _checkInteractionSprite() {
+    if (_interactables.isEmpty) {
+      return;
+    }
+
+    final interactable = _interactables.last.getInteraction();
+    if (!interactable.canInteract(direction) && _questionMark != null) {
+      remove(_questionMark!);
+      _questionMark = null;
+    } else if (interactable.canInteract(direction) && _questionMark == null) {
+      _questionMark = SpriteComponent(sprite: _questionMarkSprite);
+      _questionMark!.position =
+          Vector2((size.x - _questionMarkSprite.srcSize.x) / 2, -2);
+      add(_questionMark!);
+    }
   }
 
   int _rowFromDirection(Direction direction) {
