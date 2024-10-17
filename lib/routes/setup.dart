@@ -12,7 +12,7 @@ class _AliasCubit extends Cubit<String> {
 
 class _CharacterSelectCubit extends Cubit<int> {
   static const int _min = 1;
-  static const int _max = 1;
+  static const int _max = 15;
 
   _CharacterSelectCubit() : super(_min);
 
@@ -119,7 +119,7 @@ class _SetupPage extends StatelessWidget {
                 ),
                 BlocBuilder<_CharacterSelectCubit, int>(
                   builder: (context, state) => SizedBox(
-                    height: height * 0.075,
+                    height: height * 0.1,
                     child: SpriteWidget.asset(
                       path: 'character_${state}_idle.png',
                       srcSize: Vector2(32, 48),

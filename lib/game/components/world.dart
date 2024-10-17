@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:gahood_portfolio/game/components/object.dart';
 import 'package:gahood_portfolio/game/components/player.dart';
@@ -61,6 +63,10 @@ class GahoodWorld extends World with HasCollisionDetection {
       'map_1.tmx',
       Vector2.all(32),
       prefix: 'assets/maps/',
+      useAtlas: !kIsWeb,
+      layerPaintFactory: (_) => Paint()
+        ..isAntiAlias = false
+        ..filterQuality = FilterQuality.medium,
     );
     components.add(map);
 

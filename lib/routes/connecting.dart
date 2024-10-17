@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:dart_enet/dart_enet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gahood_portfolio/game/connection.dart';
@@ -35,18 +33,18 @@ class _ClientConnectionCubit extends Cubit<Connection?> {
   _ClientConnectionCubit() : super(null);
 
   Future<void> connect() async {
-    final Host host = Host(channelLimit: 1, peerCount: 1);
-    host.connect(Address('127.0.0.1', 1234), 1);
-    EnetEvent? event;
-    while (true) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      event = host.service();
-      if (event is! ConnectEvent) {
-        continue;
-      }
-      emit(Connection(host: host, peer: event.peer));
-      break;
-    }
+    // final Host host = Host(channelLimit: 1, peerCount: 1);
+    // host.connect(Address('127.0.0.1', 1234), 1);
+    // EnetEvent? event;
+    // while (true) {
+    //   await Future.delayed(const Duration(milliseconds: 500));
+    //   event = host.service();
+    //   if (event is! ConnectEvent) {
+    //     continue;
+    //   }
+    //   emit(Connection(host: host, peer: event.peer));
+    //   break;
+    // }
   }
 }
 
