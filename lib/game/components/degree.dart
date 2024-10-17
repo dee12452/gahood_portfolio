@@ -9,18 +9,17 @@ import 'package:gahood_portfolio/game/components/text_box.dart';
 
 class Degree extends PositionComponent with Interactable {
   final Direction interactionDirection;
-  final Vector2 interactionPosition;
+  final Vector2 interactionOffset;
 
   Degree({
     required Vector2 rawPos,
     required this.interactionDirection,
-    required this.interactionPosition,
+    required this.interactionOffset,
   }) : super(position: _fromRawPos(rawPos));
 
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-    debugMode = true;
     final degreeImg = await Flame.images.load('degree.png');
     final plaqueImg = await Flame.images.load('plaque.png');
     final degreeSprite = SpriteComponent.fromImage(degreeImg);
@@ -29,8 +28,8 @@ class Degree extends PositionComponent with Interactable {
     add(degreeSprite);
 
     final interactionHitbox = RectangleHitbox(
-      position: interactionPosition,
-      size: plaqueSprite.size,
+      position: interactionOffset + Vector2(0, -4),
+      size: Vector2(plaqueSprite.size.x, plaqueSprite.size.y / 2),
     );
     add(interactionHitbox);
   }
@@ -43,9 +42,10 @@ class Degree extends PositionComponent with Interactable {
   @override
   void interact() {
     final textComponent = GahoodTextBox(
-      'Hey, it\'s my Bachelor\'s Degree in Computer and Science!',
+      texts: [
+        'It\'s my Bachelor\'s Degree in Computer Science from the University of Washington!',
+      ],
     );
-    textComponent.onComplete = () => remove(textComponent);
     add(textComponent);
   }
 

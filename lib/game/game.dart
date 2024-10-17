@@ -9,6 +9,12 @@ import 'package:gahood_portfolio/game/components/player.dart';
 import 'package:gahood_portfolio/game/components/world.dart';
 import 'package:gahood_portfolio/game/connection.dart';
 
+enum GameState {
+  play,
+  freeze,
+  stop,
+}
+
 class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
   static final Set<LogicalKeyboardKey> _arrowKeys = {
     LogicalKeyboardKey.keyW,
@@ -25,11 +31,13 @@ class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
 
   final List<LogicalKeyboardKey> _directionKeysDown = [];
   Player? _player;
+  GameState state;
 
   GahoodGame({
     required this.alias,
     required this.character,
     required this.connection,
+    this.state = GameState.play,
   }) : super(
           world: GahoodWorld(),
           camera: CameraComponent.withFixedResolution(

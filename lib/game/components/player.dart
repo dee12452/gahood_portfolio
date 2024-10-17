@@ -21,6 +21,8 @@ class Player extends SpriteAnimationComponent
   final double speed;
   late SpriteSheet _idleSpriteSheet;
   late SpriteSheet _walkSpriteSheet;
+  late Sprite _questionMarkSprite;
+  SpriteComponent? _questionMark;
 
   Player({required this.character, this.speed = 100})
       : super(
@@ -46,12 +48,14 @@ class Player extends SpriteAnimationComponent
       to: 4,
     );
 
+    final questionMarkImage = await Flame.images.load('question_mark.png');
+    _questionMarkSprite = Sprite(questionMarkImage);
+
     final hitbox = RectangleHitbox.relative(
       Vector2(0.8, 0.5),
       parentSize: size,
       position: Vector2(size.x * 0.1, size.y * 0.5),
     );
-    hitbox.debugMode = true;
     add(hitbox);
   }
 
@@ -68,6 +72,12 @@ class Player extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
+
+    if (game.state != GameState.play) {
+      stop();
+      return;
+    }
+
     final direction = Direction.fromKey(game.nextDirectionKey);
     move(dt, speed, direction);
     final map = (game.world as GahoodWorld).map;

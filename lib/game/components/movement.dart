@@ -14,6 +14,11 @@ mixin MovementController {
     setPosition(context.previousPosition);
   }
 
+  void stop() {
+    onStopMove();
+    context.moving = false;
+  }
+
   void move(double dt, double speed, Direction? direction) {
     final previousPosition = getPosition();
     context.previousPosition = Vector2.copy(previousPosition);
