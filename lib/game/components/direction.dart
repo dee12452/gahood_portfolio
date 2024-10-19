@@ -7,13 +7,16 @@ enum Direction {
   right;
 
   static Direction? fromKey(LogicalKeyboardKey? key) {
-    if (key == LogicalKeyboardKey.keyW) {
+    if (key == LogicalKeyboardKey.keyW || key == LogicalKeyboardKey.arrowUp) {
       return up;
-    } else if (key == LogicalKeyboardKey.keyS) {
+    } else if (key == LogicalKeyboardKey.keyS ||
+        key == LogicalKeyboardKey.arrowDown) {
       return down;
-    } else if (key == LogicalKeyboardKey.keyA) {
+    } else if (key == LogicalKeyboardKey.keyA ||
+        key == LogicalKeyboardKey.arrowLeft) {
       return left;
-    } else if (key == LogicalKeyboardKey.keyD) {
+    } else if (key == LogicalKeyboardKey.keyD ||
+        key == LogicalKeyboardKey.arrowRight) {
       return right;
     }
     return null;

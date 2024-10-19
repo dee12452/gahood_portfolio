@@ -20,7 +20,7 @@ class GamePage extends StatelessWidget {
     // TODO: Do we need a server?
     final client = metadata['client'] as Connection?;
     client?.disconnect();
-    if (alias == null || character == null) {
+    if (character == null) {
       context.go('/');
       return Container();
     }

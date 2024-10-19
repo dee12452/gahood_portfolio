@@ -64,9 +64,11 @@ class GahoodWorld extends World with HasCollisionDetection {
       Vector2.all(32),
       prefix: 'assets/maps/',
       useAtlas: !kIsWeb,
-      layerPaintFactory: (_) => Paint()
-        ..isAntiAlias = false
-        ..filterQuality = FilterQuality.medium,
+      layerPaintFactory: !kIsWeb
+          ? null
+          : (_) => Paint()
+            ..isAntiAlias = false
+            ..filterQuality = FilterQuality.medium,
     );
     components.add(map);
 

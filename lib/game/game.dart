@@ -13,7 +13,7 @@ import 'package:gahood_portfolio/game/input.dart';
 import 'package:gahood_portfolio/game/state.dart';
 
 class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
-  final String alias;
+  final String? alias;
   final int character;
   final KeyUpCubit keyUpCubit = KeyUpCubit();
   final KeyDownCubit keyDownCubit = KeyDownCubit();
@@ -22,8 +22,8 @@ class GahoodGame extends FlameGame with KeyboardEvents, TapCallbacks {
   GameState state;
 
   GahoodGame({
-    required this.alias,
     required this.character,
+    this.alias,
     this.state = GameState.play,
   });
 

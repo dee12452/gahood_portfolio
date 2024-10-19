@@ -20,6 +20,9 @@ class AnimationContext {
 
 class Player extends SpriteAnimationComponent
     with HasGameReference<GahoodGame>, CollisionCallbacks, MovementController {
+  static const double _walkAnimationSpeed = 0.15;
+  static const double _idleAnimationSpeed = 0.25;
+
   final int character;
   final double speed;
   final List<Interactable> _interactables = [];
@@ -49,7 +52,7 @@ class Player extends SpriteAnimationComponent
     _walkSpriteSheet = SpriteSheet(image: walkImage, srcSize: Vector2(32, 48));
     animation = _idleSpriteSheet.createAnimation(
       row: _rowFromDirection(direction),
-      stepTime: 0.2,
+      stepTime: _idleAnimationSpeed,
       to: 4,
     );
 
@@ -128,7 +131,7 @@ class Player extends SpriteAnimationComponent
   onStartMove(Direction newDirection) {
     animation = _walkSpriteSheet.createAnimation(
       row: _rowFromDirection(newDirection),
-      stepTime: 0.2,
+      stepTime: _walkAnimationSpeed,
       to: 4,
     );
   }
@@ -137,7 +140,7 @@ class Player extends SpriteAnimationComponent
   onStopMove() {
     animation = _idleSpriteSheet.createAnimation(
       row: _rowFromDirection(direction),
-      stepTime: 0.2,
+      stepTime: _idleAnimationSpeed,
       to: 4,
     );
   }
@@ -180,7 +183,7 @@ class Player extends SpriteAnimationComponent
     }
   }
 
-  int _rowFromDirection(Direction direction) {
+  static int _rowFromDirection(Direction direction) {
     int row;
     switch (direction) {
       case Direction.up:

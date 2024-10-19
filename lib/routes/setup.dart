@@ -12,7 +12,7 @@ class _AliasCubit extends Cubit<String> {
 
 class _CharacterSelectCubit extends Cubit<int> {
   static const int _min = 1;
-  static const int _max = 15;
+  static const int _max = 18;
 
   _CharacterSelectCubit() : super(_min);
 
@@ -85,22 +85,22 @@ class _SetupPage extends StatelessWidget {
                 color: Colors.white70, // Set text color
               ),
             ),
-            SizedBox(
-              height: height * 0.1,
-            ),
-            SizedBox(
-              width: width * 0.5,
-              child: TextField(
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(), // Adds an outlined border
-                  hintText: 'Enter an alias', // Hint text
-                  fillColor: Colors.white70,
-                  filled: true,
-                ),
-                controller: _aliasController,
-              ),
-            ),
+            // SizedBox(
+            //   height: height * 0.1,
+            // ),
+            // SizedBox(
+            //   width: width * 0.5,
+            //   child: TextField(
+            //     textAlign: TextAlign.center,
+            //     decoration: const InputDecoration(
+            //       border: OutlineInputBorder(), // Adds an outlined border
+            //       hintText: 'Enter an alias', // Hint text
+            //       fillColor: Colors.white70,
+            //       filled: true,
+            //     ),
+            //     controller: _aliasController,
+            //   ),
+            // ),
             SizedBox(
               height: height * 0.1,
             ),
@@ -117,16 +117,25 @@ class _SetupPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(
+                  width: width * 0.01,
+                ),
                 BlocBuilder<_CharacterSelectCubit, int>(
                   builder: (context, state) => SizedBox(
                     height: height * 0.1,
-                    child: SpriteWidget.asset(
-                      path: 'character_${state}_idle.png',
-                      srcSize: Vector2(32, 48),
-                      loadingBuilder: (context) =>
-                          const CircularProgressIndicator(),
+                    child: Transform.scale(
+                      scale: 2,
+                      child: SpriteWidget.asset(
+                        path: 'character_${state}_idle.png',
+                        srcSize: Vector2(32, 48),
+                        loadingBuilder: (context) =>
+                            const CircularProgressIndicator(),
+                      ),
                     ),
                   ),
+                ),
+                SizedBox(
+                  width: width * 0.01,
                 ),
                 GestureDetector(
                   onTap: characterSelectCubit.toggleRight,
@@ -156,22 +165,21 @@ class _SetupPage extends StatelessWidget {
             ),
             BlocBuilder<_AliasCubit, String>(
               builder: (context, state) => ElevatedButton(
-                onPressed: state == ''
-                    ? () {}
-                    : () {
-                        context.go(
-                          '/game',
-                          extra: {
-                            'alias': state,
-                            'character': characterSelectCubit.state,
-                          },
-                        );
-                      },
+                onPressed: () {
+                  context.go(
+                    '/game',
+                    extra: {
+                      'alias': state,
+                      'character': characterSelectCubit.state,
+                    },
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16), // Rounded edges
                   ),
-                  foregroundColor: state == '' ? Colors.grey : Colors.blue,
+                  // foregroundColor: state == '' ? Colors.grey : Colors.blue,
+                  foregroundColor: Colors.blue,
                 ),
                 child: const Text('Play'),
               ),

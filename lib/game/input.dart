@@ -36,6 +36,14 @@ class PlayerInputCubit extends Cubit<PlayerInput> {
     LogicalKeyboardKey.keyA,
     LogicalKeyboardKey.keyS,
     LogicalKeyboardKey.keyD,
+    LogicalKeyboardKey.arrowUp,
+    LogicalKeyboardKey.arrowDown,
+    LogicalKeyboardKey.arrowLeft,
+    LogicalKeyboardKey.arrowRight,
+  };
+  static final Set<LogicalKeyboardKey> _actionKeys = {
+    LogicalKeyboardKey.space,
+    LogicalKeyboardKey.enter,
   };
   final List<LogicalKeyboardKey> _directionKeysDown = [];
 
@@ -70,7 +78,7 @@ class PlayerInputCubit extends Cubit<PlayerInput> {
       _directionKeysDown.remove(key);
       _directionKeysDown.add(key!);
       emit(PlayerMovementInput(direction: direction!));
-    } else if (key == LogicalKeyboardKey.space) {
+    } else if (_actionKeys.contains(key)) {
       emit(const PlayerActionInput());
     } else {
       emit(const PlayerNoInput());
