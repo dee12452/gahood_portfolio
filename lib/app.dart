@@ -7,6 +7,7 @@ class GahoodApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      title: 'Adam Charlton\'s Portfolio',
       routerConfig: router,
     );
   }
