@@ -24,7 +24,7 @@ class Computer extends PositionComponent
     final operations = <String, Function>{
       'Yes': () {
         final resumeUri = Uri.parse(
-          'https://github.com/dee12452/gahoodrpg_wiki',
+          'https://github.com/dee12452/gahood_portfolio',
         );
         launchUrl(resumeUri);
       },
