@@ -45,6 +45,7 @@ dependencies:
   flame_audio: ^2.10.5
   fl_chart: ^0.69.0
   percent_indicator: ^4.2.3
+  web_socket_channel: ^3.0.1
 
 dev_dependencies:
   flutter_test:

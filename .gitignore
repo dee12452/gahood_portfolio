@@ -11,6 +11,9 @@
 migrate_working_dir/
 server/build/
 assets/
+venv/
+*.js
+node_modules/
 
 # IntelliJ related
 *.iml

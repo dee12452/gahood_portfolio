@@ -1,13 +1,44 @@
 import 'package:flame/game.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gahood_portfolio/game/connection.dart';
 import 'package:gahood_portfolio/game/game.dart';
+import 'package:gahood_portfolio/game/state.dart';
+import 'package:gahood_portfolio/widgets/chatbox.dart';
 import 'package:go_router/go_router.dart';
+
+class ChatBoxToggleCubit extends Cubit<bool> {
+  ChatBoxToggleCubit() : super(true);
+
+  void toggle() {
+    emit(!state);
+  }
+}
 
 class GamePage extends StatelessWidget {
   final dynamic metadata;
 
-  const GamePage({super.key, required this.metadata});
+  const GamePage({required this.metadata});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ChatBoxToggleCubit()),
+      ],
+      child: Scaffold(
+        body: _GamePage(metadata: metadata),
+      ),
+    );
+  }
+}
+
+class _GamePage extends StatelessWidget {
+  final dynamic metadata;
+  final FocusNode gameFocus = FocusNode();
+  final FocusNode chatFocus = FocusNode();
+
+  _GamePage({required this.metadata});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +56,36 @@ class GamePage extends StatelessWidget {
       return Container();
     }
 
-    return GameWidget(
-      game: GahoodGame(
-        alias: alias,
-        character: character,
-      ),
+    final chatBoxCubit = context.read<ChatBoxToggleCubit>();
+    final game = GahoodGame(
+      alias: alias,
+      character: character,
+      exitGame: () => context.go('/portfolio'),
+      openBotOverlay: chatBoxCubit.toggle,
+    );
+    return Stack(
+      children: [
+        GameWidget(
+          game: game,
+          focusNode: gameFocus,
+        ),
+        BlocBuilder<ChatBoxToggleCubit, bool>(
+          builder: (context, state) {
+            if (!state) {
+              return Container();
+            }
+            return ChatBox(
+              focusNode: chatFocus,
+              onClose: () {
+                chatBoxCubit.toggle();
+                game.state = GameState.play;
+                chatFocus.unfocus();
+                gameFocus.requestFocus();
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 }

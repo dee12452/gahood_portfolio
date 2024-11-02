@@ -72,10 +72,13 @@ class _SetupPage extends StatelessWidget {
             const Text(
               'Welcome to',
               style: TextStyle(
-                fontSize: 16.0, // Set font size for the title
+                fontSize: 20.0, // Set font size for the title
                 fontWeight: FontWeight.bold, // Make the text bold
                 color: Colors.white70, // Set text color
               ),
+            ),
+            SizedBox(
+              height: height * 0.075,
             ),
             const Text(
               'Adam Charlton\'s Portfolio',
@@ -150,10 +153,10 @@ class _SetupPage extends StatelessWidget {
               ],
             ),
             SizedBox(
-              height: height * 0.02,
+              height: height * 0.01,
             ),
             const Text(
-              'Select Character',
+              'Select Your Character',
               style: TextStyle(
                 fontSize: 14.0, // Set font size for the title
                 fontWeight: FontWeight.bold, // Make the text bold

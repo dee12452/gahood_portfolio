@@ -43,6 +43,7 @@ abstract class Interaction {
 
 class SelectionInteraction extends Interaction {
   final PositionComponent parent;
+  final bool playGameOnFinished;
   late final Direction direction;
   late final List<GahoodTextBoxConfig> configs;
 
@@ -51,6 +52,7 @@ class SelectionInteraction extends Interaction {
     required this.parent,
     required String interactionId,
     required Map<String, Function> operations,
+    this.playGameOnFinished = true,
   }) {
     final interactionDef =
         game.interactionFile[interactionId] as Map<String, dynamic>;
@@ -86,7 +88,10 @@ class SelectionInteraction extends Interaction {
 
   @override
   void interact() {
-    final textComponent = GahoodTextBox(configs: configs);
+    final textComponent = GahoodTextBox(
+      configs: configs,
+      playGameOnFinished: playGameOnFinished,
+    );
     parent.add(textComponent);
   }
 }

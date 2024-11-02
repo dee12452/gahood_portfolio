@@ -7,12 +7,13 @@ import 'package:flame/sprite.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
 import 'package:gahood_portfolio/game/game.dart';
+import 'package:gahood_portfolio/game/state.dart';
 
-class Adam extends PositionComponent
+class Bot extends PositionComponent
     with Interactable, HasGameReference<GahoodGame> {
   late SpriteSheet _idleSpriteSheet;
 
-  Adam({
+  Bot({
     required Vector2 rawPos,
   }) : super(position: _fromRawPos(rawPos), size: Vector2.all(32));
 
@@ -24,7 +25,7 @@ class Adam extends PositionComponent
         RectangleHitbox(position: Vector2(4, 2), size: Vector2(24, 38));
     add(hitbox);
 
-    final idleImage = await Flame.images.load('adam_idle.png');
+    final idleImage = await Flame.images.load('robot_idle.png');
     _idleSpriteSheet = SpriteSheet(
       image: idleImage,
       srcSize: Vector2(32, 48),
@@ -43,14 +44,18 @@ class Adam extends PositionComponent
   @override
   Interaction getInteraction() {
     final operations = <String, Function>{
-      'Yes': () => game.exitGame(),
+      'Yes': () {
+        game.state = GameState.freeze;
+        game.openBotOverlay();
+      },
       'No': () {},
     };
     return SelectionInteraction(
       game: game,
       parent: this,
-      interactionId: 'adam',
+      interactionId: 'bot',
       operations: operations,
+      playGameOnFinished: false,
     );
   }
 

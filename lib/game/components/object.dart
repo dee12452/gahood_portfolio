@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:gahood_portfolio/game/components/adam.dart';
+import 'package:gahood_portfolio/game/components/bot.dart';
 import 'package:gahood_portfolio/game/components/computer.dart';
 import 'package:gahood_portfolio/game/components/degree.dart';
 import 'package:gahood_portfolio/game/components/hazel.dart';
@@ -24,6 +25,8 @@ class ObjectFactory {
       return Hazel(rawPos: object.position);
     } else if (cls == 'adam') {
       return Adam(rawPos: object.position);
+    } else if (cls == 'bot') {
+      return Bot(rawPos: object.position);
     } else if (cls == 'computer') {
       return Computer(
         position: object.position,
