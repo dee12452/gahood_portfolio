@@ -8,7 +8,7 @@ import 'package:gahood_portfolio/widgets/chatbox.dart';
 import 'package:go_router/go_router.dart';
 
 class ChatBoxToggleCubit extends Cubit<bool> {
-  ChatBoxToggleCubit() : super(true);
+  ChatBoxToggleCubit() : super(false);
 
   void toggle() {
     emit(!state);
@@ -48,9 +48,6 @@ class _GamePage extends StatelessWidget {
     }
     final alias = metadata['alias'] as String?;
     final character = metadata['character'] as int?;
-    // TODO: Do we need a server?
-    final client = metadata['client'] as Connection?;
-    client?.disconnect();
     if (character == null) {
       context.go('/');
       return Container();

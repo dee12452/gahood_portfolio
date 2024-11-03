@@ -99,11 +99,26 @@ class _ChatBoxCubit extends Cubit<_ChatState> {
   }
 
   Future<void> send(String message) async {
-    if (!state.connected || channel == null || state.waitingForReply) {
+    if (!state.connected ||
+        channel == null ||
+        state.waitingForReply ||
+        message == '') {
       return;
     }
 
     final messages = List.of(state.messages);
+    if (message.length > 100) {
+      messages.add(
+        const _ChatMessage(
+          ai: true,
+          message:
+              'Prompts have a max length of 100 characters. Please try a shorter question.',
+        ),
+      );
+      emit(_ChatState(connected: state.connected, messages: messages));
+      return;
+    }
+
     messages.add(_ChatMessage(ai: false, message: message));
     emit(_ChatState(connected: state.connected, messages: messages));
     channel!.sink.add(message);

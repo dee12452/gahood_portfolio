@@ -14,8 +14,14 @@ wsServer.on('connection', (ws, rq) => {
     if (!message) {
       return;
     }
-
     console.log(`Message from ${ipAddress}: ${message}`);
+    const prompt = message.toString();
+    if (prompt.length > 100) {
+      console.log(`Message was too long with length ${prompt.length}`);
+      ws.send('Prompt too long, can only be a max of 100 characters.');
+      return;
+    }
+
     const result = await pgptClient.contextualCompletions.promptCompletion({
       prompt: message.toString(),
       includeSources: true,
