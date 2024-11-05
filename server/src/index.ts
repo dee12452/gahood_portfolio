@@ -44,7 +44,7 @@ wsServer.on('connection', (ws, rq) => {
   });
 });
 
-const port = '25566';
+const port = '8000';
 httpServer.listen(port, () => {
   console.log(`Starting server on port ${port}`);
 });
