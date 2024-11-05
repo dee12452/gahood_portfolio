@@ -4,16 +4,18 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 
-class Degree extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Degree extends InteractableComponent {
   final Vector2 interactionOffset;
 
   Degree({
     required Vector2 rawPos,
     required this.interactionOffset,
-  }) : super(position: _fromRawPos(rawPos));
+  }) : super(
+          position: _fromRawPos(rawPos),
+          size: Vector2.all(32),
+          exclamationMarkOffset: 20,
+        );
 
   @override
   FutureOr<void> onLoad() async {

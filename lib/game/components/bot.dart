@@ -6,16 +6,18 @@ import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 import 'package:gahood_portfolio/game/state.dart';
 
-class Bot extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Bot extends InteractableComponent {
   late SpriteSheet _idleSpriteSheet;
 
   Bot({
     required Vector2 rawPos,
-  }) : super(position: _fromRawPos(rawPos), size: Vector2.all(32));
+  }) : super(
+          position: _fromRawPos(rawPos),
+          size: Vector2.all(32),
+          exclamationMarkOffset: 30,
+        );
 
   @override
   FutureOr<void> onLoad() async {
@@ -48,7 +50,9 @@ class Bot extends PositionComponent
         game.state = GameState.freeze;
         game.openBotOverlay();
       },
-      'No': () {},
+      'No': () {
+        game.state = GameState.play;
+      },
     };
     return SelectionInteraction(
       game: game,

@@ -7,7 +7,6 @@ import 'package:flame/sprite.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 
 class _HazelInteraction extends TextInteraction {
   _HazelInteraction({required super.game, required super.parent})
@@ -20,13 +19,16 @@ class _HazelInteraction extends TextInteraction {
   }
 }
 
-class Hazel extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Hazel extends InteractableComponent {
   late SpriteSheet _idleSpriteSheet;
 
   Hazel({
     required Vector2 rawPos,
-  }) : super(position: _fromRawPos(rawPos), size: Vector2.all(32));
+  }) : super(
+          position: _fromRawPos(rawPos),
+          size: Vector2.all(32),
+          exclamationMarkOffset: 20,
+        );
 
   @override
   FutureOr<void> onLoad() async {

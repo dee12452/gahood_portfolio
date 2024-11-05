@@ -1,16 +1,14 @@
 import 'dart:async';
 
 import 'package:flame/collisions.dart';
-import 'package:flame/components.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Computer extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Computer extends InteractableComponent {
   Computer({
     required super.position,
     required super.size,
+    super.exclamationMarkOffset = 8,
   });
 
   @override

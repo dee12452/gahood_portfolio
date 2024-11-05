@@ -2,18 +2,20 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/text_box.dart';
 import 'package:gahood_portfolio/game/game.dart';
 
-class InteractableComponent extends PositionComponent
+abstract class InteractableComponent extends PositionComponent
     with Interactable, HasGameReference<GahoodGame> {
-  final String interactionId;
+  late final SpriteComponent exclamationMark;
+  final int exclamationMarkOffset;
 
   InteractableComponent({
-    required this.interactionId,
     required super.position,
     required super.size,
+    this.exclamationMarkOffset = 5,
   });
 
   @override
@@ -22,7 +24,34 @@ class InteractableComponent extends PositionComponent
 
     final hitbox = RectangleHitbox();
     add(hitbox);
+
+    final exclamationImage = await Flame.images.load('exclamation_mark.png');
+    exclamationMark = SpriteComponent.fromImage(exclamationImage);
+    add(exclamationMark);
+    exclamationMark.position = Vector2(
+      (size.x - exclamationMark.size.x) / 2,
+      exclamationMark.position.y - exclamationMarkOffset,
+    );
+    exclamationMark.priority = -1;
   }
+
+  void interact(Direction direction) {
+    final interaction = getInteraction();
+    if (interaction.canInteract(direction)) {
+      remove(exclamationMark);
+      interaction.interact();
+    }
+  }
+}
+
+class BasicInteractable extends InteractableComponent {
+  final String interactionId;
+
+  BasicInteractable({
+    required this.interactionId,
+    required super.position,
+    required super.size,
+  });
 
   @override
   Interaction getInteraction() {

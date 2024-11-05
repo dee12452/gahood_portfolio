@@ -25,7 +25,7 @@ class Player extends SpriteAnimationComponent
 
   final int character;
   final double speed;
-  final List<Interactable> _interactables = [];
+  final List<InteractableComponent> _interactables = [];
   late SpriteSheet _idleSpriteSheet;
   late SpriteSheet _walkSpriteSheet;
   late Sprite _questionMarkSprite;
@@ -114,8 +114,8 @@ class Player extends SpriteAnimationComponent
     if (other is Wall) {
       _nextMoveDirection = null;
       undoMove();
-    } else if (other is Interactable) {
-      _interactables.add(other as Interactable);
+    } else if (other is InteractableComponent) {
+      _interactables.add(other);
     }
   }
 
@@ -150,10 +150,8 @@ class Player extends SpriteAnimationComponent
       return;
     }
 
-    final interaction = _interactables.last.getInteraction();
-    if (interaction.canInteract(direction)) {
-      interaction.interact();
-    }
+    final interaction = _interactables.last;
+    interaction.interact(direction);
   }
 
   void _checkOutsideMap() {

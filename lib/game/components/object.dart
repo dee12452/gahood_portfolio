@@ -16,7 +16,7 @@ class ObjectFactory {
     if (cls == 'interactable') {
       final interactionId =
           object.properties.getValue<String>('interactionId')!;
-      return InteractableComponent(
+      return BasicInteractable(
         position: object.position,
         size: object.size,
         interactionId: interactionId,

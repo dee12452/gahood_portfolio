@@ -6,15 +6,17 @@ import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:gahood_portfolio/game/components/direction.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 
-class Adam extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Adam extends InteractableComponent {
   late SpriteSheet _idleSpriteSheet;
 
   Adam({
     required Vector2 rawPos,
-  }) : super(position: _fromRawPos(rawPos), size: Vector2.all(32));
+  }) : super(
+          position: _fromRawPos(rawPos),
+          size: Vector2.all(32),
+          exclamationMarkOffset: 20,
+        );
 
   @override
   FutureOr<void> onLoad() async {

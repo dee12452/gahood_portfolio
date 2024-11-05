@@ -4,17 +4,19 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:gahood_portfolio/game/components/interactable.dart';
-import 'package:gahood_portfolio/game/game.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Resume extends PositionComponent
-    with Interactable, HasGameReference<GahoodGame> {
+class Resume extends InteractableComponent {
   final Vector2 interactionOffset;
 
   Resume({
     required Vector2 rawPos,
     required this.interactionOffset,
-  }) : super(position: _fromRawPos(rawPos));
+  }) : super(
+          position: _fromRawPos(rawPos),
+          size: Vector2.all(32),
+          exclamationMarkOffset: 20,
+        );
 
   @override
   FutureOr<void> onLoad() async {
@@ -35,7 +37,7 @@ class Resume extends PositionComponent
     final operations = <String, Function>{
       'Yes': () {
         final resumeUri = Uri.parse(
-          'https://drive.google.com/file/d/1DM7Mf9TAhUaWzjEFE8gX1pqscjQuv5vU/view?usp=sharing',
+          'https://drive.google.com/file/d/1h-eGaxUhrtfKj304whRNwAl0X4qD2Qhj/view?usp=sharing',
         );
         launchUrl(resumeUri);
       },
