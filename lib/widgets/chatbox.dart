@@ -60,6 +60,13 @@ class _ChatBoxCubit extends Cubit<_ChatState> {
         message: 'Connected. Go ahead and ask a question about Adam!',
       ),
     );
+    messages.add(
+      const _ChatMessage(
+        ai: true,
+        message:
+            'Please allow up to 30 seconds for questions to be answered as the LLM is not being ran optimally.',
+      ),
+    );
     emit(
       _ChatState(
         connected: true,
@@ -94,6 +101,22 @@ class _ChatBoxCubit extends Cubit<_ChatState> {
           ),
         );
         emit(_ChatState(connected: false, messages: allMessages));
+      },
+      onDone: () {
+        final allMessages = List.of(state.messages);
+        allMessages.add(
+          const _ChatMessage(
+            ai: true,
+            message: 'You have been disconnected from the chat.',
+          ),
+        );
+        emit(
+          _ChatState(
+            connected: false,
+            messages: allMessages,
+            waitingForReply: false,
+          ),
+        );
       },
     );
   }

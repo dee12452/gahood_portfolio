@@ -11,6 +11,7 @@ abstract class InteractableComponent extends PositionComponent
     with Interactable, HasGameReference<GahoodGame> {
   late final SpriteComponent exclamationMark;
   final int exclamationMarkOffset;
+  bool hasInteracted = false;
 
   InteractableComponent({
     required super.position,
@@ -37,10 +38,14 @@ abstract class InteractableComponent extends PositionComponent
 
   void interact(Direction direction) {
     final interaction = getInteraction();
-    if (interaction.canInteract(direction)) {
-      remove(exclamationMark);
-      interaction.interact();
+    if (!interaction.canInteract(direction)) {
+      return;
     }
+    if (!hasInteracted) {
+      remove(exclamationMark);
+      hasInteracted = true;
+    }
+    interaction.interact();
   }
 }
 

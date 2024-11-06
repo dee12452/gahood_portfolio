@@ -6,6 +6,9 @@ const pgptClient = await client.createPgptClient();
 const httpServer = http.createServer();
 const wsServer = new WebSocketServer({ server: httpServer });
 
+let runningQueries = 0;
+const maxQueries = 5;
+
 wsServer.on('connection', (ws, rq) => {
   const ipAddress = rq.socket.remoteAddress;
   console.log(`New connection! ${ipAddress}`);
@@ -15,28 +18,21 @@ wsServer.on('connection', (ws, rq) => {
       return;
     }
     console.log(`Message from ${ipAddress}: ${message}`);
-    const prompt = message.toString();
-    if (prompt.length > 100) {
-      console.log(`Message was too long with length ${prompt.length}`);
-      ws.send('Prompt too long, can only be a max of 100 characters.');
+    if (runningQueries > maxQueries) {
+      ws.send('AI is currently at capacity, please try again later.');
       return;
     }
 
-    const result = await pgptClient.contextualCompletions.promptCompletion({
-      prompt: message.toString(),
-      includeSources: true,
-      useContext: true,
-    });
-    if (result.choices.length == 0) {
-      return;
-    }
-    const aiMessage = result.choices[0].message?.content;
-    if (aiMessage) {
-      console.log(`Message to ${ipAddress}: ${aiMessage}`);
-      ws.send(aiMessage);
-    } else {
+    runningQueries++;
+    const prompt = message.toString();
+    const response = await client.createResponse(pgptClient, prompt);
+    if (!response) {
       ws.close(1013, 'Failed to receive a response from the AI.')
+    } else {
+      console.log(`Message to ${ipAddress}: ${response}`);
+      ws.send(response);
     }
+    runningQueries--;
   });
 
   ws.on('close', () => {
