@@ -30,7 +30,7 @@ class _ChatState extends Equatable {
 }
 
 class _ChatBoxCubit extends Cubit<_ChatState> {
-  static final Uri _serverUrl = Uri.parse('wss://api.ai.gahood.io');
+  static final Uri _serverUrl = Uri.parse('wss://api.gahood.io');
   WebSocketChannel? channel;
 
   _ChatBoxCubit() : super(const _ChatState(connected: false, messages: []));
